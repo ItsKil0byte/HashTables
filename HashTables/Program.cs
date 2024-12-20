@@ -9,6 +9,9 @@ namespace HashTables
 
         static void Main()
         {
+            // Размер хэш-таблицы
+            const int hashTableSize = 10000;
+
             while (true)
             {
                 Console.Clear();
@@ -27,21 +30,17 @@ namespace HashTables
                     {
                         case 0:
                             Console.WriteLine("\nЗавершение программы...");
-
                             return;
                         case 1:
-                            var function = GetChainHashTableFunc();
-
-                            if (function != null)
+                            var chainFunction = GetChainHashTableFunc();
+                            if (chainFunction != null)
                             {
-                                var hashTable = new ChainHashTable<string, string>(userSize, function);
-
+                                var hashTable = new ChainHashTable<string, string>(userSize, chainFunction);
                                 RunHashMenu(hashTable);
                             }
-
                             break;
                         case 2:
-                            // Логика для хэш-таблицы с открытой адресацией
+                            RunOpenAddressingMenu(hashTableSize);
                             break;
                         case 3:
                             // Логика для тестов
@@ -57,6 +56,44 @@ namespace HashTables
             }
         }
 
+        private static void RunOpenAddressingMenu(int size)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите метод разрешения коллизий:\n");
+                Console.WriteLine("1. Линейное исследование.");
+                Console.WriteLine("2. Квадратичное исследование.");
+                Console.WriteLine("3. Двойное хеширование.");
+                Console.WriteLine("0. Вернуться в главное меню.\n");
+
+                Console.Write("Введите число от 0 до 3: ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 3)
+                {
+                    if (userInput == 0) return;
+
+                    CollisionResolutionMethod method = userInput switch
+                    {
+                        1 => CollisionResolutionMethod.Linear,
+                        2 => CollisionResolutionMethod.Quadratic,
+                        3 => CollisionResolutionMethod.DoubleHashing,
+                        _ => throw new InvalidOperationException("Неизвестный метод.")
+                    };
+
+                    var hashTable = new OpenAddressingHashTable<string, string>(size, method);
+                    RunHashMenu(hashTable);
+                }
+                else
+                {
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 3.");
+                    Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey();
+                }
+            }
+        }
+        
         private static Func<string, int> GetChainHashTableFunc()
         {
             int userInput;
@@ -104,7 +141,7 @@ namespace HashTables
                 Console.WriteLine("4. Вывод таблицы.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
-                Console.Write("Введите число от 0 до 3: ");
+                Console.Write("Введите число от 0 до 4: ");
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 4)
