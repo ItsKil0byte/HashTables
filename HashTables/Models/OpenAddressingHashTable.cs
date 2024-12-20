@@ -112,5 +112,37 @@ namespace HashTables
 
             return (probeIndex + size) % size; // Гарантируем положительный индекс
         }
+        
+        public int LongestClusterLength()
+        {
+            int maxLength = 0; 
+            int currentLength = 0; 
+
+            for (int i = 0; i < size; i++)
+            {
+                if (table[i] != null) 
+                {
+                    currentLength++; 
+                }
+                else
+                {
+                    
+                    
+                    if (currentLength > maxLength)
+                    {
+                        maxLength = currentLength;
+                    }
+                    currentLength = 0; 
+                }
+            }
+
+            
+            if (currentLength > maxLength)
+            {
+                maxLength = currentLength;
+            }
+
+            return maxLength; 
+        }
     }
 }

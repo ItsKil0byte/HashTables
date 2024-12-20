@@ -37,7 +37,7 @@
             int hash = 0;
             foreach (char c in key)
             {
-                hash += c; // Суммируем ASCII значения символов
+                hash += c; 
             }
             return hash % size;
         }

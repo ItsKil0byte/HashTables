@@ -144,12 +144,13 @@ namespace HashTables
                 Console.WriteLine("2. Найти элемент.");
                 Console.WriteLine("3. Удалить элемент.");
                 Console.WriteLine("4. Вывод таблицы.");
+                Console.WriteLine("5. Длина самого длинного кластера."); 
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
-                Console.Write("Введите число от 0 до 4: ");
+                Console.Write("Введите число от 0 до 5: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 4)
+                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 5)
                 {
                     switch (userInput)
                     {
@@ -167,7 +168,17 @@ namespace HashTables
                         case 4:
                             Console.Clear();
                             hashTable.Print();
-
+                            break;
+                        case 5:
+                            if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
+                            {
+                                int longestClusterLength = openAddressingHashTable.LongestClusterLength();
+                                Console.WriteLine($"\nДлина самого длинного кластера: {longestClusterLength}");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nОшибка: данный метод доступен только для хэш-таблиц с открытой адресацией.");
+                            }
                             break;
                     }
 
@@ -176,7 +187,7 @@ namespace HashTables
                 }
                 else
                 {
-                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 3.");
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 5.");
                     Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey();
                 }
