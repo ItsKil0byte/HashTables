@@ -65,12 +65,14 @@ namespace HashTables
                 Console.WriteLine("1. Линейное исследование.");
                 Console.WriteLine("2. Квадратичное исследование.");
                 Console.WriteLine("3. Двойное хеширование.");
+                Console.WriteLine("4. Полиномиальное хеширование.");
+                Console.WriteLine("5. Хеширование на основе простых чисел.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
-                Console.Write("Введите число от 0 до 3: ");
+                Console.Write("Введите число от 0 до 5: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 3)
+                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 5)
                 {
                     if (userInput == 0) return;
 
@@ -79,6 +81,8 @@ namespace HashTables
                         1 => CollisionResolutionMethod.Linear,
                         2 => CollisionResolutionMethod.Quadratic,
                         3 => CollisionResolutionMethod.DoubleHashing,
+                        4 => CollisionResolutionMethod.Polynomial,
+                        5 => CollisionResolutionMethod.Simple, 
                         _ => throw new InvalidOperationException("Неизвестный метод.")
                     };
 
@@ -87,12 +91,13 @@ namespace HashTables
                 }
                 else
                 {
-                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 3.");
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 5.");
                     Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey();
                 }
             }
         }
+
         
         private static Func<string, int> GetChainHashTableFunc()
         {

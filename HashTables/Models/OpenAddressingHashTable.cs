@@ -1,5 +1,4 @@
 ﻿using HashTables.Models;
-using System;
 
 namespace HashTables
 {
@@ -7,9 +6,11 @@ namespace HashTables
     {
         Linear,
         Quadratic,
-        DoubleHashing
+        DoubleHashing,
+        Polynomial,
+        Simple
     }
-
+    
     public class OpenAddressingHashTable<K, V> : IHashTable<K, V> where K : class where V : class
     {
         private readonly int size;
@@ -104,11 +105,12 @@ namespace HashTables
                 CollisionResolutionMethod.Linear => CollisionResolutionMethods.LinearProbing(index, attempt) % size,
                 CollisionResolutionMethod.Quadratic => CollisionResolutionMethods.QuadraticProbing(index, attempt) % size,
                 CollisionResolutionMethod.DoubleHashing => CollisionResolutionMethods.DoubleHashing(key, size, attempt),
+                CollisionResolutionMethod.Polynomial => CollisionResolutionMethods.PolynomialHash(key.ToString(), size) + attempt % size,
+                CollisionResolutionMethod.Simple => CollisionResolutionMethods.SimpleSumHash(key.ToString(), size) + attempt % size, // Используем SimpleSumHash
                 _ => throw new InvalidOperationException("Неизвестный метод разрешения коллизий.")
             };
-            
-            return (probeIndex + size) % size; // Это гарантирует, что индекс всегда будет положительным
-        }
 
+            return (probeIndex + size) % size; // Гарантируем положительный индекс
+        }
     }
 }
