@@ -109,18 +109,24 @@ namespace HashTables
                 Console.WriteLine("Выберите хэш-функцию:\n");
                 Console.WriteLine("1. Метод деления.");
                 Console.WriteLine("2. Метод умножения.");
+                Console.WriteLine("3. Метод исключающего или.");
+                Console.WriteLine("4. Функция DJB2.");
+                Console.WriteLine("5. Функция FNV-1A.");
+                Console.WriteLine("6. Функция Дженкинса.");
+                Console.WriteLine("7. Стандартная функция C#.");
+                Console.WriteLine("8. Стандартная функция на основе длинны ключа.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
-                Console.Write("Введите число от 0 до 2: ");
+                Console.Write("Введите число от 0 до 8: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 2)
+                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 8)
                 {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 2.");
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 8.");
                     Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey();
                 }
@@ -130,6 +136,12 @@ namespace HashTables
             {
                 1 => key => HashFunctions.DivisionFunction(key, userSize),
                 2 => key => HashFunctions.MultiplicationFunction(key, userSize),
+                3 => key => HashFunctions.XORFunction(key, userSize),
+                4 => key => HashFunctions.DJB2Function(key, userSize),
+                5 => key => HashFunctions.FNV1AFunction(key, userSize),
+                6 => key => HashFunctions.JenkinsFunction(key, userSize),
+                7 => key => HashFunctions.StandartFunction(key, userSize),
+                8 => key => HashFunctions.LengthFunction(key, userSize),
                 0 => null,
             };
         }
@@ -168,6 +180,14 @@ namespace HashTables
                         case 4:
                             Console.Clear();
                             hashTable.Print();
+
+                            if (hashTable is ChainHashTable<string, string> chainHashTable)
+                            {
+                                Console.WriteLine($"\nКоэффициент заполнения: {chainHashTable.CalculateLoadFactor()}");
+                                Console.WriteLine($"Самая длинная цепочка: {chainHashTable.GetLongestChainLength()}");
+                                Console.WriteLine($"Самая короткая цепочка: {chainHashTable.GetShortestChainLength()}");
+                            }
+
                             break;
                         case 5:
                             if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)

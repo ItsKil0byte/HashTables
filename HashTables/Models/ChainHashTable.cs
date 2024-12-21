@@ -90,5 +90,28 @@
                 }
             }
         }
+
+        public double CalculateLoadFactor()
+        {
+            int chains = table.Count(chain => chain.Count > 0);
+            return (double) chains / table.Length;
+        }
+
+        public int GetLongestChainLength()
+        {
+            return table.Max(chain => chain.Count);
+        }
+
+        public int GetShortestChainLength()
+        {
+            var chains = table.Where(chain => chain.Count > 0);
+
+            if (!chains.Any())
+            {
+                return 0; // Если все цепочки пусты, вернуть 0
+            }
+
+            return chains.Min(chain => chain.Count);
+        }
     }
 }

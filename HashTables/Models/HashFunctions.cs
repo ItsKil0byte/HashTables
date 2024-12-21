@@ -30,13 +30,72 @@
             return Math.Abs((int)(size * (intKey * A % 1)));
         }
 
-        public static int CustomFunction(string key, int size)
+        public static int XORFunction(string key, int size)
         {
-            int intKey = StringKeyToInt(key);
-            
-            // Потом что-нибудь для неё придумаю
+            int hash = 0;
 
-            return Math.Abs(intKey * 2 % size);
+            foreach (char c in key)
+            {
+                hash ^= c;
+            }
+
+            return Math.Abs(hash % size);
+        }
+
+
+        public static int DJB2Function(string key, int size)
+        {
+            int hash = 5381;
+
+            foreach (char symbol in key)
+            {
+                hash = (hash << 5) + hash + symbol;
+            }
+
+            return Math.Abs(hash % size);
+        }
+
+        public static int FNV1AFunction(string key, int size)
+        {
+            const uint FNVPrime = 16777619;
+            const uint OffsetBasis = 2166136261;
+            uint hash = OffsetBasis;
+
+            foreach (char symbol in key)
+            {
+                hash ^= symbol;
+                hash *= FNVPrime;
+            }
+
+            return Math.Abs((int)(hash % size));
+        }
+
+        public static int JenkinsFunction(string key, int size)
+        {
+            uint hash = 0;
+
+            foreach (char symbol in key)
+            {
+                hash += symbol;
+                hash += hash << 10;
+                hash ^= hash >> 6;
+            }
+
+            hash += hash << 3;
+            hash ^= hash >> 11;
+            hash += hash << 15;
+
+            return Math.Abs((int)(hash % size));
+        }
+
+        public static int StandartFunction(string key, int size)
+        {
+            return Math.Abs(key.GetHashCode() % size);
+        }
+
+        public static int LengthFunction(string key, int size)
+        {
+            return key.Length % size;
         }
     }
 }
