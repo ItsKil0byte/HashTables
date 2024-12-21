@@ -7,15 +7,15 @@
             return index + i;
         }
 
-        public static int QuadraticProbing(int index, int i)
+        public static int QuadraticProbing(int index, int i, int size)
         {
-            return index + i * i;
+            return (index + i * i) % size;
         }
 
-        public static int DoubleHashing<K>(K key, int size, int attempt)
+        public static int DoubleHashing<K>(K key, int size, int attempt, Func<K, int> hashFunction)
         {
-            int hash1 = key.GetHashCode() % size;
-            int hash2 = 1 + (key.GetHashCode() % (size - 1)); // Второй хеш должен быть не нулевым
+            int hash1 = Math.Abs(hashFunction(key) % size);
+            int hash2 = 1 + (Math.Abs(hashFunction(key) % (size - 1))); // Второй хеш должен быть не нулевым
             return (hash1 + attempt * hash2) % size;
         }
         

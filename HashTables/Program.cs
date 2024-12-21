@@ -40,7 +40,9 @@ namespace HashTables
                             }
                             break;
                         case 2:
-                            RunOpenAddressingMenu(hashTableSize);
+                            var collisionMethod = GetOpenAddressingCollisionMethod();
+                            var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, key => key.Length);
+                            RunHashMenu(hashTableOpen);
                             break;
                         case 3:
                             // Логика для тестов
@@ -55,9 +57,11 @@ namespace HashTables
                 }
             }
         }
-
-        private static void RunOpenAddressingMenu(int size)
+        
+        private static CollisionResolutionMethod GetOpenAddressingCollisionMethod()
         {
+            int userInput;
+
             while (true)
             {
                 Console.Clear();
@@ -72,22 +76,24 @@ namespace HashTables
                 Console.Write("Введите число от 0 до 5: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 5)
+                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 5)
                 {
-                    if (userInput == 0) return;
-
-                    CollisionResolutionMethod method = userInput switch
+                    if (userInput == 0)
                     {
-                        1 => CollisionResolutionMethod.Linear,
-                        2 => CollisionResolutionMethod.Quadratic,
-                        3 => CollisionResolutionMethod.DoubleHashing,
-                        4 => CollisionResolutionMethod.Polynomial,
-                        5 => CollisionResolutionMethod.Simple, 
-                        _ => throw new InvalidOperationException("Неизвестный метод.")
-                    };
-
-                    var hashTable = new OpenAddressingHashTable<string, string>(size, method);
-                    RunHashMenu(hashTable);
+                        return CollisionResolutionMethod.Linear;
+                    }
+                    else
+                    {
+                        return userInput switch
+                        {
+                            1 => CollisionResolutionMethod.Linear,
+                            2 => CollisionResolutionMethod.Quadratic,
+                            3 => CollisionResolutionMethod.DoubleHashing,
+                            4 => CollisionResolutionMethod.Polynomial,
+                            5 => CollisionResolutionMethod.Simple,
+                            _ => throw new InvalidOperationException("Неизвестный метод.")
+                        };
+                    }
                 }
                 else
                 {
@@ -97,7 +103,6 @@ namespace HashTables
                 }
             }
         }
-
         
         private static Func<string, int> GetChainHashTableFunc()
         {
@@ -156,7 +161,6 @@ namespace HashTables
                 Console.WriteLine("2. Найти элемент.");
                 Console.WriteLine("3. Удалить элемент.");
                 Console.WriteLine("4. Вывод таблицы.");
-                Console.WriteLine("5. Длина самого длинного кластера."); 
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
                 Console.Write("Введите число от 0 до 5: ");
@@ -187,18 +191,16 @@ namespace HashTables
                                 Console.WriteLine($"Самая длинная цепочка: {chainHashTable.GetLongestChainLength()}");
                                 Console.WriteLine($"Самая короткая цепочка: {chainHashTable.GetShortestChainLength()}");
                             }
-
-                            break;
-                        case 5:
-                            if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
+                            
+                            else if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
                             {
                                 int longestClusterLength = openAddressingHashTable.LongestClusterLength();
+                                int shortestClusterLength = openAddressingHashTable.ShortestClusterLength(); 
                                 Console.WriteLine($"\nДлина самого длинного кластера: {longestClusterLength}");
+                                Console.WriteLine($"Длина самого короткого кластера: {shortestClusterLength}"); 
+                                Console.WriteLine($"Размер таблицы: {openAddressingHashTable.Size}"); 
                             }
-                            else
-                            {
-                                Console.WriteLine("\nОшибка: данный метод доступен только для хэш-таблиц с открытой адресацией.");
-                            }
+
                             break;
                     }
 
