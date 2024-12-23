@@ -19,27 +19,14 @@
             return (hash1 + attempt * hash2) % size;
         }
         
-        public static int PolynomialHash(string key, int size)
+        public static int DistanceProbing(int index, int i)
         {
-            const int prime = 31; // Простое число в качестве основания
-            int hash = 0;
-
-            for (int i = 0; i < key.Length; i++)
-            {
-                hash = (hash * prime + key[i]) % size; // Полиномиальная формула
-            }
-
-            return hash;
+            return index + (i * (i + 1)) / 2; 
         }
-        
-        public static int SimpleSumHash(string key, int size)
+
+        public static int SparseProbing(int index, int i)
         {
-            int hash = 0;
-            foreach (char c in key)
-            {
-                hash += c; 
-            }
-            return hash % size;
+            return index + (i * 2); 
         }
     }
 }

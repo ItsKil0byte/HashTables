@@ -7,9 +7,10 @@ namespace HashTables
         Linear,
         Quadratic,
         DoubleHashing,
-        Polynomial,
-        Simple
+        Distance,
+        Sparse    
     }
+
     
     public class OpenAddressingHashTable<K, V> : IHashTable<K, V> where K : class where V : class
     {
@@ -150,8 +151,8 @@ namespace HashTables
                 CollisionResolutionMethod.Linear => CollisionResolutionMethods.LinearProbing(index, attempt) % size,
                 CollisionResolutionMethod.Quadratic => CollisionResolutionMethods.QuadraticProbing(index, attempt, size) % size,
                 CollisionResolutionMethod.DoubleHashing => CollisionResolutionMethods.DoubleHashing(key, size, attempt, hashFunction),
-                CollisionResolutionMethod.Polynomial => CollisionResolutionMethods.PolynomialHash(key.ToString(), size) + attempt % size,
-                CollisionResolutionMethod.Simple => CollisionResolutionMethods.SimpleSumHash(key.ToString(), size) + attempt % size, 
+                CollisionResolutionMethod.Distance => CollisionResolutionMethods.DistanceProbing(index, attempt) % size,
+                CollisionResolutionMethod.Sparse => CollisionResolutionMethods.SparseProbing(index, attempt) % size,
                 _ => throw new InvalidOperationException("Неизвестный метод разрешения коллизий.")
             };
 

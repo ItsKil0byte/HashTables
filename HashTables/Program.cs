@@ -41,8 +41,19 @@ namespace HashTables
                             break;
                         case 2:
                             var collisionMethod = GetOpenAddressingCollisionMethod();
-                            var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, key => key.Length);
-                            RunHashMenu(hashTableOpen);
+                            
+                            for (int i = 1; i <= 5; i++)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("Выберите хэш-функцию:\n");
+                                var hashFunction = GetChainHashTableFunc();
+
+                                if (hashFunction != null)
+                                {
+                                    var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, hashFunction);
+                                    RunHashMenu(hashTableOpen);
+                                }
+                            }
                             break;
                         case 3:
                             // Логика для тестов
@@ -58,6 +69,7 @@ namespace HashTables
             }
         }
         
+        
         private static CollisionResolutionMethod GetOpenAddressingCollisionMethod()
         {
             int userInput;
@@ -66,11 +78,11 @@ namespace HashTables
             {
                 Console.Clear();
                 Console.WriteLine("Выберите метод разрешения коллизий:\n");
-                Console.WriteLine("1. Линейное исследование.");
-                Console.WriteLine("2. Квадратичное исследование.");
+                Console.WriteLine("1. Линейное пробирование.");
+                Console.WriteLine("2. Квадратичное пробированиее.");
                 Console.WriteLine("3. Двойное хеширование.");
-                Console.WriteLine("4. Полиномиальное хеширование.");
-                Console.WriteLine("5. Хеширование на основе простых чисел.");
+                Console.WriteLine("4. Пробирование с расстоянием.");
+                Console.WriteLine("5. Разреженное пробирование.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
                 Console.Write("Введите число от 0 до 5: ");
@@ -89,8 +101,8 @@ namespace HashTables
                             1 => CollisionResolutionMethod.Linear,
                             2 => CollisionResolutionMethod.Quadratic,
                             3 => CollisionResolutionMethod.DoubleHashing,
-                            4 => CollisionResolutionMethod.Polynomial,
-                            5 => CollisionResolutionMethod.Simple,
+                            4 => CollisionResolutionMethod.Distance,
+                            5 => CollisionResolutionMethod.Sparse,
                             _ => throw new InvalidOperationException("Неизвестный метод.")
                         };
                     }
