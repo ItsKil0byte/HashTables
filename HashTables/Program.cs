@@ -40,19 +40,12 @@ namespace HashTables
                             }
                             break;
                         case 2:
-                            var collisionMethod = GetOpenAddressingCollisionMethod();
-                            
-                            for (int i = 1; i <= 5; i++)
+                            var hashFunction = GetChainHashTableFunc();
+                            if (hashFunction != null)
                             {
-                                Console.Clear();
-                                Console.WriteLine("Выберите хэш-функцию:\n");
-                                var hashFunction = GetChainHashTableFunc();
-
-                                if (hashFunction != null)
-                                {
-                                    var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, hashFunction);
-                                    RunHashMenu(hashTableOpen);
-                                }
+                                var collisionMethod = GetOpenAddressingCollisionMethod();
+                                var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, hashFunction);
+                                RunHashMenu(hashTableOpen);
                             }
                             break;
                         case 3:

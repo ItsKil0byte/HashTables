@@ -21,7 +21,7 @@
 
         private int GetIndex(K key)
         {
-            return Math.Abs(hashFunction(key) % size);
+            return hashFunction(key);
         }
 
         public void Insert(K key, V value)
