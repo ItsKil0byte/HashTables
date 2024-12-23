@@ -2,15 +2,16 @@
 {
     public static class CollisionResolutionMethods
     {
-        public static int LinearProbing(int index, int i)
+       public static int LinearProbing(int index, int attempt, int size)
         {
-            return index + i;
+        return (index + attempt) % size;
         }
 
-        public static int QuadraticProbing(int index, int i, int size)
+        public static int QuadraticProbing(int index, int attempt, int size, int c1, int c2)
         {
-            return (index + i * i) % size;
+            return (index + c1 * attempt + c2 * attempt * attempt) % size;
         }
+
 
         public static int DoubleHashing<K>(K key, int size, int attempt, Func<K, int> hashFunction)
         {

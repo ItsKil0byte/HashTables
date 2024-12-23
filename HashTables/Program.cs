@@ -203,6 +203,8 @@ namespace HashTables
                 Console.WriteLine($"\nДлина самого длинного кластера: {longestClusterLength}");
                 Console.WriteLine($"Длина самого короткого кластера: {shortestClusterLength}");
                 Console.WriteLine($"Размер таблицы: {openAddressingHashTable.Size}");
+                Console.WriteLine($"Заполненные ячейки: {openAddressingHashTable.FilledCellsCount()}");
+                Console.WriteLine($"Процент заполнения: {openAddressingHashTable.FillPercentage():F4}%");
             }
             Console.ReadLine();
         }
@@ -251,10 +253,13 @@ namespace HashTables
                             else if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
                             {
                                 int longestClusterLength = openAddressingHashTable.LongestClusterLength();
-                                int shortestClusterLength = openAddressingHashTable.ShortestClusterLength(); 
+                                int shortestClusterLength = openAddressingHashTable.ShortestClusterLength();
+                                int tableSize = openAddressingHashTable.Size;
                                 Console.WriteLine($"\nДлина самого длинного кластера: {longestClusterLength}");
-                                Console.WriteLine($"Длина самого короткого кластера: {shortestClusterLength}"); 
-                                Console.WriteLine($"Размер таблицы: {openAddressingHashTable.Size}"); 
+                                Console.WriteLine($"Длина самого короткого кластера: {shortestClusterLength}");
+                                Console.WriteLine($"Размер таблицы: {tableSize}");
+                                Console.WriteLine($"Заполненные ячейки: {openAddressingHashTable.FilledCellsCount()}");
+                                Console.WriteLine($"Процент заполнения: {openAddressingHashTable.FillPercentage():F4}%");
                             }
 
                             break;

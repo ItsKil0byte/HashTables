@@ -46,7 +46,7 @@ namespace HashTables
 
         public void Insert(K key, V value)
         {
-            if (count >= size) 
+            if (count >= size * 0.7) 
             {
                 Resize(); 
             }
@@ -117,8 +117,6 @@ namespace HashTables
 
         public void Print()
         {
-            Console.WriteLine($"Заполненные ячейки: {FilledCellsCount()}");
-            Console.WriteLine($"Процент заполнения: {FillPercentage():F4}%"); 
             for (int i = 0; i < size; i++)
             {
                 if (table[i] != null)
@@ -148,8 +146,8 @@ namespace HashTables
         {
             int probeIndex = collisionMethod switch
             {
-                CollisionResolutionMethod.Linear => CollisionResolutionMethods.LinearProbing(index, attempt) % size,
-                CollisionResolutionMethod.Quadratic => CollisionResolutionMethods.QuadraticProbing(index, attempt, size) % size,
+                CollisionResolutionMethod.Linear => CollisionResolutionMethods.LinearProbing(index, attempt, size),
+                CollisionResolutionMethod.Quadratic => CollisionResolutionMethods.QuadraticProbing(index, attempt, size, 1, 3),
                 CollisionResolutionMethod.DoubleHashing => CollisionResolutionMethods.DoubleHashing(key, size, attempt, hashFunction),
                 CollisionResolutionMethod.Distance => CollisionResolutionMethods.DistanceProbing(index, attempt) % size,
                 CollisionResolutionMethod.Sparse => CollisionResolutionMethods.SparseProbing(index, attempt) % size,
