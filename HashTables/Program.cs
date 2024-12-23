@@ -1,16 +1,22 @@
 ﻿using HashTables.Models;
+using System.Reflection.Emit;
 
 namespace HashTables
 {
     public class Program
     {
         // Размер табличек для "поиграться" в менюшках.
-        private static readonly int userSize = 10; 
+        private static readonly int userSize = 10;
+
+        //Переключение режима тестирования
+        private static bool testingMode = false;
+
+        const int hashTableSize = 10000;
 
         static void Main()
         {
             // Размер хэш-таблицы
-            const int hashTableSize = 10000;
+            
 
             while (true)
             {
@@ -36,7 +42,14 @@ namespace HashTables
                             if (chainFunction != null)
                             {
                                 var hashTable = new ChainHashTable<string, string>(userSize, chainFunction);
-                                RunHashMenu(hashTable);
+                                if (testingMode)
+                                {
+                                    RunHashTesting(hashTable);
+                                }
+                                else
+                                {
+                                    RunHashMenu(hashTable);
+                                }
                             }
                             break;
                         case 2:
@@ -45,11 +58,21 @@ namespace HashTables
                             {
                                 var collisionMethod = GetOpenAddressingCollisionMethod();
                                 var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, hashFunction);
-                                RunHashMenu(hashTableOpen);
+                                if (testingMode)
+                                {
+                                    RunHashTesting(hashTableOpen);
+                                }
+                                else
+                                {
+                                    RunHashMenu(hashTableOpen);
+                                }
                             }
                             break;
                         case 3:
-                            // Логика для тестов
+                            Console.Clear();
+                            testingMode = !testingMode;
+                            Console.WriteLine("Режим тестирования включен");
+                            Console.ReadLine();
                             break;
                     }
                 }
@@ -156,6 +179,34 @@ namespace HashTables
             };
         }
 
+        private static void RunHashTesting(IHashTable<string, string> hashTable)
+        {
+            Console.Clear();
+            var items = new RandomStringIterator(14);
+            // item - key, vaule tuple
+            foreach (var item in items.Take(hashTableSize - 1))
+            {
+                hashTable.Insert(item.Item1, item.Item2);
+            }
+            hashTable.Print();
+            if (hashTable is ChainHashTable<string, string> chainHashTable)
+            {
+                Console.WriteLine($"\nКоэффициент заполнения: {chainHashTable.CalculateLoadFactor()}");
+                Console.WriteLine($"Самая длинная цепочка: {chainHashTable.GetLongestChainLength()}");
+                Console.WriteLine($"Самая короткая цепочка: {chainHashTable.GetShortestChainLength()}");
+            }
+
+            else if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
+            {
+                int longestClusterLength = openAddressingHashTable.LongestClusterLength();
+                int shortestClusterLength = openAddressingHashTable.ShortestClusterLength();
+                Console.WriteLine($"\nДлина самого длинного кластера: {longestClusterLength}");
+                Console.WriteLine($"Длина самого короткого кластера: {shortestClusterLength}");
+                Console.WriteLine($"Размер таблицы: {openAddressingHashTable.Size}");
+            }
+            Console.ReadLine();
+        }
+
         private static void RunHashMenu(IHashTable<string, string> hashTable)
         {
             while (true)
@@ -168,7 +219,7 @@ namespace HashTables
                 Console.WriteLine("4. Вывод таблицы.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
-                Console.Write("Введите число от 0 до 5: ");
+                Console.Write("Введите число от 0 до 4: ");
                 string input = Console.ReadLine();
 
                 if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 5)
@@ -220,6 +271,8 @@ namespace HashTables
                 }
             }
         }
+
+
 
         private static void InsertElement(IHashTable<string, string> hashTable)
         {
