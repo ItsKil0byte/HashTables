@@ -12,7 +12,6 @@
             return (index + c1 * attempt + c2 * attempt * attempt) % size;
         }
 
-
         public static int DoubleHashing<K>(K key, int size, int attempt, Func<K, int> hashFunction)
         {
             int hash1 = Math.Abs(hashFunction(key) % size);

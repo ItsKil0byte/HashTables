@@ -39,9 +39,14 @@ namespace HashTables
             for (int i = 0; i < size; i++)
             {
                 int probeIndex = GetProbeIndex(key, index, i);
-                if (table[probeIndex] == null) return default;
+                if (table[probeIndex] == null)
+                {
+                    throw new KeyNotFoundException("Ключ не найден.");
+                }
                 if (table[probeIndex]?.key.Equals(key) == true)
+                {
                     return table[probeIndex]?.value;
+                }
             }
             throw new KeyNotFoundException("Ключ не найден.");
         }
