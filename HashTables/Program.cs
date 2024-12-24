@@ -78,8 +78,8 @@ namespace HashTables
                 }
             }
         }
-        
-        
+
+
         private static CollisionResolutionMethod GetOpenAddressingCollisionMethod()
         {
             int userInput;
@@ -131,21 +131,22 @@ namespace HashTables
             while (true)
             {
                 Console.Clear();
-            Console.WriteLine("Выберите опцию:\n");
-            Console.WriteLine("1. Запустить тесты хеш-таблиц с адресацией цепочками.");
-            Console.WriteLine("2. Запустить тесты хеш-таблиц с открытой адресацией.");
-            if (!testingMode) {
-                Console.WriteLine("3. Запустить режим ручного тестирования.");
-            }
-            else
-            {
-                Console.WriteLine("3. Отключить режим ручного тестирования.");
-            }
-            Console.WriteLine("0. Назад.\n");
+                Console.WriteLine("Выберите опцию:\n");
+                Console.WriteLine("1. Запустить тесты хеш-таблиц с адресацией цепочками.");
+                Console.WriteLine("2. Запустить тесты хеш-таблиц с открытой адресацией.");
+                if (!testingMode)
+                {
+                    Console.WriteLine("3. Запустить режим ручного тестирования.");
+                }
+                else
+                {
+                    Console.WriteLine("3. Отключить режим ручного тестирования.");
+                }
+                Console.WriteLine("0. Назад.\n");
 
-            Console.Write("Введите число от 0 до 3: ");
-            string input = Console.ReadLine();
-            
+                Console.Write("Введите число от 0 до 3: ");
+                string input = Console.ReadLine();
+
                 if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 3)
                 {
                     switch (userInput)
@@ -175,9 +176,67 @@ namespace HashTables
 
         private static void PrintChainHashTableTests()
         {
-            Console.Clear();
-            string sep = "\t|\t";
-            Console.WriteLine($"Название{sep}Элементов{sep}Коэффициент заполнения{sep}Длиннейшая цепочка{sep}Кратчайшая цепочка");
+            int itemsCount;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.Write("Введите количество элементов для вставки: \n");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out itemsCount))
+                {
+                    Console.Clear();
+                    break;
+                }
+                else { 
+                    Console.WriteLine("Некоректное значение, введите число"); 
+                    Console.ReadKey();
+                }
+            }
+
+            Dictionary<string, ChainHashTable<string, string>> chainHashTables = new Dictionary<string, ChainHashTable<string, string>>()
+            {
+                { "Деление", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.DivisionFunction(key, chainSize)) },
+                { "Умножение", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.MultiplicationFunction(key, chainSize)) },
+                { "Полиномиальная", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.PolynomialHashFunction(key, chainSize)) },
+                { "DJB2", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.DJB2Function(key, chainSize)) },
+                { "FNV-1a", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.FNV1AFunction(key, chainSize)) },
+                { "Jenkins", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.JenkinsFunction(key, chainSize)) },
+                { "Стандартная", new ChainHashTable<string, string>(chainSize, (key) => HashFunctions.StandartFunction(key, chainSize)) }
+            };
+
+
+            Console.WriteLine($"Выбранное количество элементов: {itemsCount}");
+
+            string header = string.Format(
+            "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} |",
+            "Название", "Размер", "Коэффициент заполнения", "Длиннейшая цепочка", "Кратчайшая цепочка"
+            );
+
+            string separator = new string('-', header.Length);
+
+            Console.WriteLine(separator);
+            Console.WriteLine(header);
+            Console.WriteLine(separator);
+            foreach (var key in chainHashTables.Keys) {
+                var ht = chainHashTables[key];
+
+                var randomItems = new RandomStringIterator(5);
+
+                foreach(var i in randomItems.Take(itemsCount))
+                {
+                    ht.Insert(i.Item1, i.Item2);
+                }
+
+                Console.WriteLine(
+                    string.Format(
+                        "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} |",
+                        key, chainSize, $"{ht.CalculateLoadFactor():F4}", ht.GetLongestChainLength(), ht.GetShortestChainLength()
+                        ));
+                Console.WriteLine(separator);
+            }
+
             Console.ReadLine();
             return;
         }
@@ -277,7 +336,7 @@ namespace HashTables
         {
             Console.Clear();
 
-            int itemsCount = hashTable is ChainHashTable<string, string> ? 100000 : 10000;
+            int itemsCount = hashTable is ChainHashTable<string, string> ? openSize : chainSize;
             var items = new RandomStringIterator(10);
 
             foreach (var item in items.Take(itemsCount))
@@ -347,7 +406,7 @@ namespace HashTables
                                 Console.WriteLine($"Самая длинная цепочка: {chainHashTable.GetLongestChainLength()}");
                                 Console.WriteLine($"Самая короткая цепочка: {chainHashTable.GetShortestChainLength()}");
                             }
-                            
+
                             else if (hashTable is OpenAddressingHashTable<string, string> openAddressingHashTable)
                             {
                                 int longestClusterLength = openAddressingHashTable.LongestClusterLength();
