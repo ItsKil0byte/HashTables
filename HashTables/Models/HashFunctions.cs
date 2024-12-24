@@ -30,18 +30,20 @@
             return Math.Abs((int)(size * (intKey * A % 1)));
         }
 
-        public static int XORFunction(string key, int size)
+        public static int PolynomialHashFunction(string key, int size)
         {
+            const int p = 31;
             int hash = 0;
+            int power = 1;
 
-            foreach (char c in key)
+            foreach (char symbol in key)
             {
-                hash ^= c;
+                hash = (hash + symbol * power % size) % size;
+                power = power * p % size;
             }
 
             return Math.Abs(hash % size);
         }
-
 
         public static int DJB2Function(string key, int size)
         {
@@ -91,11 +93,6 @@
         public static int StandartFunction(string key, int size)
         {
             return Math.Abs(key.GetHashCode() % size);
-        }
-
-        public static int LengthFunction(string key, int size)
-        {
-            return key.Length % size;
         }
     }
 }

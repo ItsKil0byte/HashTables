@@ -5,19 +5,16 @@ namespace HashTables
 {
     public class Program
     {
-        // Размер табличек для "поиграться" в менюшках.
-        private static readonly int userSize = 10;
+        // Размер таблички для первого задания.
+        private static readonly int chainSize = 1000;
+        // Размер таблички для второго задания. Простое число для двойного хэширования.
+        private static readonly int openSize = 10001;
 
         //Переключение режима тестирования
         private static bool testingMode = false;
 
-        const int hashTableSize = 10000;
-
         static void Main()
         {
-            // Размер хэш-таблицы
-            
-
             while (true)
             {
                 Console.Clear();
@@ -41,7 +38,7 @@ namespace HashTables
                             var chainFunction = GetChainHashTableFunc();
                             if (chainFunction != null)
                             {
-                                var hashTable = new ChainHashTable<string, string>(userSize, chainFunction);
+                                var hashTable = new ChainHashTable<string, string>(chainSize, chainFunction);
                                 if (testingMode)
                                 {
                                     RunHashTesting(hashTable);
@@ -53,11 +50,11 @@ namespace HashTables
                             }
                             break;
                         case 2:
-                            var hashFunction = GetChainHashTableFunc();
+                            var hashFunction = GetOpenHashTableFunc();
                             if (hashFunction != null)
                             {
                                 var collisionMethod = GetOpenAddressingCollisionMethod();
-                                var hashTableOpen = new OpenAddressingHashTable<string, string>(hashTableSize, collisionMethod, hashFunction);
+                                var hashTableOpen = new OpenAddressingHashTable<string, string>(openSize, collisionMethod, hashFunction);
                                 if (testingMode)
                                 {
                                     RunHashTesting(hashTableOpen);
@@ -138,11 +135,11 @@ namespace HashTables
             Console.WriteLine("1. Запустить тесты хеш-таблиц с адресацией цепочками.");
             Console.WriteLine("2. Запустить тесты хеш-таблиц с открытой адресацией.");
             if (!testingMode) {
-                Console.WriteLine("2. Запустить режим ручного тестирования.");
+                Console.WriteLine("3. Запустить режим ручного тестирования.");
             }
             else
             {
-                Console.WriteLine("2. Отключить режим ручного тестирования.");
+                Console.WriteLine("3. Отключить режим ручного тестирования.");
             }
             Console.WriteLine("0. Назад.\n");
 
@@ -175,7 +172,7 @@ namespace HashTables
                 }
             }
         }
-        
+
         private static Func<string, int> GetChainHashTableFunc()
         {
             int userInput;
@@ -186,24 +183,23 @@ namespace HashTables
                 Console.WriteLine("Выберите хэш-функцию:\n");
                 Console.WriteLine("1. Метод деления.");
                 Console.WriteLine("2. Метод умножения.");
-                Console.WriteLine("3. Метод исключающего или.");
+                Console.WriteLine("3. Метод полинома.");
                 Console.WriteLine("4. Функция DJB2.");
                 Console.WriteLine("5. Функция FNV-1A.");
                 Console.WriteLine("6. Функция Дженкинса.");
                 Console.WriteLine("7. Стандартная функция C#.");
-                Console.WriteLine("8. Стандартная функция на основе длинны ключа.");
                 Console.WriteLine("0. Вернуться в главное меню.\n");
 
                 Console.Write("Введите число от 0 до 8: ");
                 string input = Console.ReadLine();
 
-                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 8)
+                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 7)
                 {
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 8.");
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 7.");
                     Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey();
                 }
@@ -211,14 +207,59 @@ namespace HashTables
 
             return userInput switch
             {
-                1 => key => HashFunctions.DivisionFunction(key, userSize),
-                2 => key => HashFunctions.MultiplicationFunction(key, userSize),
-                3 => key => HashFunctions.XORFunction(key, userSize),
-                4 => key => HashFunctions.DJB2Function(key, userSize),
-                5 => key => HashFunctions.FNV1AFunction(key, userSize),
-                6 => key => HashFunctions.JenkinsFunction(key, userSize),
-                7 => key => HashFunctions.StandartFunction(key, userSize),
-                8 => key => HashFunctions.LengthFunction(key, userSize),
+                1 => key => HashFunctions.DivisionFunction(key, chainSize),
+                2 => key => HashFunctions.MultiplicationFunction(key, chainSize),
+                3 => key => HashFunctions.PolynomialHashFunction(key, chainSize),
+                4 => key => HashFunctions.DJB2Function(key, chainSize),
+                5 => key => HashFunctions.FNV1AFunction(key, chainSize),
+                6 => key => HashFunctions.JenkinsFunction(key, chainSize),
+                7 => key => HashFunctions.StandartFunction(key, chainSize),
+                0 => null,
+            };
+        }
+
+        // Копипаст, извините, делаю на коленке. Её использовать для открытой адресации.
+        private static Func<string, int> GetOpenHashTableFunc()
+        {
+            int userInput;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Выберите хэш-функцию:\n");
+                Console.WriteLine("1. Метод деления.");
+                Console.WriteLine("2. Метод умножения.");
+                Console.WriteLine("3. Метод полинома.");
+                Console.WriteLine("4. Функция DJB2.");
+                Console.WriteLine("5. Функция FNV-1A.");
+                Console.WriteLine("6. Функция Дженкинса.");
+                Console.WriteLine("7. Стандартная функция C#.");
+                Console.WriteLine("0. Вернуться в главное меню.\n");
+
+                Console.Write("Введите число от 0 до 8: ");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out userInput) && userInput >= 0 && userInput <= 7)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 7.");
+                    Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey();
+                }
+            }
+
+            return userInput switch
+            {
+                1 => key => HashFunctions.DivisionFunction(key, openSize),
+                2 => key => HashFunctions.MultiplicationFunction(key, openSize),
+                3 => key => HashFunctions.PolynomialHashFunction(key, openSize),
+                4 => key => HashFunctions.DJB2Function(key, openSize),
+                5 => key => HashFunctions.FNV1AFunction(key, openSize),
+                6 => key => HashFunctions.JenkinsFunction(key, openSize),
+                7 => key => HashFunctions.StandartFunction(key, openSize),
                 0 => null,
             };
         }
@@ -226,16 +267,18 @@ namespace HashTables
         private static void RunHashTesting(IHashTable<string, string> hashTable)
         {
             Console.Clear();
-            var items = new RandomStringIterator(14);
-            // item - key, vaule tuple
-            foreach (var item in items.Take(hashTableSize - 1))
+
+            int itemsCount = hashTable is ChainHashTable<string, string> ? 100000 : 10000;
+            var items = new RandomStringIterator(10);
+
+            foreach (var item in items.Take(itemsCount))
             {
                 hashTable.Insert(item.Item1, item.Item2);
             }
-            hashTable.Print();
+
             if (hashTable is ChainHashTable<string, string> chainHashTable)
             {
-                Console.WriteLine($"\nКоэффициент заполнения: {chainHashTable.CalculateLoadFactor()}");
+                Console.WriteLine($"\nКоэффициент заполнения: {chainHashTable.CalculateLoadFactor():F4}%");
                 Console.WriteLine($"Самая длинная цепочка: {chainHashTable.GetLongestChainLength()}");
                 Console.WriteLine($"Самая короткая цепочка: {chainHashTable.GetShortestChainLength()}");
             }
@@ -250,7 +293,9 @@ namespace HashTables
                 Console.WriteLine($"Заполненные ячейки: {openAddressingHashTable.FilledCellsCount()}");
                 Console.WriteLine($"Процент заполнения: {openAddressingHashTable.FillPercentage():F4}%");
             }
-            Console.ReadLine();
+
+            Console.WriteLine("\nНажмите любую клавишу, чтобы продолжить...");
+            Console.ReadKey();
         }
 
         private static void RunHashMenu(IHashTable<string, string> hashTable)
