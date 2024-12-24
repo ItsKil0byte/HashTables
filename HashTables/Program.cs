@@ -69,10 +69,7 @@ namespace HashTables
                             }
                             break;
                         case 3:
-                            Console.Clear();
-                            testingMode = !testingMode;
-                            Console.WriteLine("Режим тестирования включен");
-                            Console.ReadLine();
+                            TestingMenu();
                             break;
                     }
                 }
@@ -126,6 +123,53 @@ namespace HashTables
                 else
                 {
                     Console.WriteLine("\nОшибка: введите корректное число от 0 до 5.");
+                    Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
+                    Console.ReadKey();
+                }
+            }
+        }
+
+        private static void TestingMenu()
+        {
+            while (true)
+            {
+                Console.Clear();
+            Console.WriteLine("Выберите опцию:\n");
+            Console.WriteLine("1. Запустить тесты хеш-таблиц с адресацией цепочками.");
+            Console.WriteLine("2. Запустить тесты хеш-таблиц с открытой адресацией.");
+            if (!testingMode) {
+                Console.WriteLine("2. Запустить режим ручного тестирования.");
+            }
+            else
+            {
+                Console.WriteLine("2. Отключить режим ручного тестирования.");
+            }
+            Console.WriteLine("0. Назад.\n");
+
+            Console.Write("Введите число от 0 до 3: ");
+            string input = Console.ReadLine();
+            
+                if (int.TryParse(input, out int userInput) && userInput >= 0 && userInput <= 3)
+                {
+                    switch (userInput)
+                    {
+                        case 0:
+                            return;
+                        case 1:
+                            continue;
+                            break;
+                        case 2:
+                            continue;
+                            break;
+                        case 3:
+                            testingMode = !testingMode;
+                            break;
+
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nОшибка: введите корректное число от 0 до 3.");
                     Console.WriteLine("Нажмите любую клавишу, чтобы продолжить...");
                     Console.ReadKey();
                 }

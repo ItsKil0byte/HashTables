@@ -20,6 +20,8 @@ namespace HashTables
         private readonly CollisionResolutionMethod collisionMethod;
         private readonly Func<K, int> hashFunction;
 
+        public int timesRehashed { get; private set; } = 0;
+
         public OpenAddressingHashTable(int initialSize, CollisionResolutionMethod method, Func<K, int> hashFunction)
         {
             size = initialSize;
@@ -74,6 +76,8 @@ namespace HashTables
 
         private void Resize()
         {
+            timesRehashed++;
+
             int newSize = size * 2;
             var newTable = new (K key, V value)?[newSize];
             
