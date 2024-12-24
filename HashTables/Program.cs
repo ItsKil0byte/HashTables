@@ -153,7 +153,7 @@ namespace HashTables
                         case 0:
                             return;
                         case 1:
-                            continue;
+                            PrintChainHashTableTests();
                             break;
                         case 2:
                             continue;
@@ -171,6 +171,15 @@ namespace HashTables
                     Console.ReadKey();
                 }
             }
+        }
+
+        private static void PrintChainHashTableTests()
+        {
+            Console.Clear();
+            string sep = "\t|\t";
+            Console.WriteLine($"Название{sep}Элементов{sep}Коэффициент заполнения{sep}Длиннейшая цепочка{sep}Кратчайшая цепочка");
+            Console.ReadLine();
+            return;
         }
 
         private static Func<string, int> GetChainHashTableFunc()
