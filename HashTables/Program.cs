@@ -15,7 +15,7 @@ namespace HashTables
 
         static void Main()
         {
-            while (true)
+           while (true)
             {
                 Console.Clear();
                 Console.WriteLine("Выберите опцию:\n");
@@ -252,8 +252,9 @@ namespace HashTables
                             hashFuncName, ht.Size, ht.FillPercentage(), ht.LongestClusterLength(), ht.ShortestClusterLength(), ht.timesRehashed
                             ));
                     Console.WriteLine(separator);
-                    Console.WriteLine("\n");
+                    
                 }
+                Console.WriteLine("\n");
             }
             Console.ReadLine();
             return;
