@@ -157,7 +157,7 @@ namespace HashTables
                             PrintChainHashTableTests();
                             break;
                         case 2:
-                            continue;
+                            PrintOpenHashTableTests();
                             break;
                         case 3:
                             testingMode = !testingMode;
@@ -172,6 +172,92 @@ namespace HashTables
                     Console.ReadKey();
                 }
             }
+        }
+
+        private static void PrintOpenHashTableTests()
+        {
+            int itemsCount;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.Write("Введите количество элементов для вставки: \n");
+                string input = Console.ReadLine();
+
+                if (int.TryParse(input, out itemsCount))
+                {
+                    Console.Clear();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Некоректное значение, введите число");
+                    Console.ReadKey();
+                }
+            }
+
+            Dictionary<string, Func<string, int>> hashFunctions = new Dictionary<string, Func<string, int>>()
+            {
+                { "Деление", (key) => HashFunctions.DivisionFunction(key, openSize)},
+                { "Умножение", (key) => HashFunctions.MultiplicationFunction(key, openSize)},
+                { "Полиномиальная", (key) => HashFunctions.PolynomialHashFunction(key, openSize)},
+                { "DJB2", (key) => HashFunctions.DJB2Function(key, openSize)},
+                { "FNV-1a", (key) => HashFunctions.FNV1AFunction(key, openSize)},
+                { "Jenkins", (key) => HashFunctions.JenkinsFunction(key, openSize) },
+                { "Стандартная", (key) => HashFunctions.StandartFunction(key, openSize) }
+            };
+
+            Dictionary<string, CollisionResolutionMethod> resolutionMethods = new Dictionary<string, CollisionResolutionMethod>()
+            {
+                { "Линейный", CollisionResolutionMethod.Linear },
+                { "Квадратичный", CollisionResolutionMethod.Quadratic },
+                { "Двойное хеширование", CollisionResolutionMethod.DoubleHashing },
+                { "Расстояние", CollisionResolutionMethod.Distance },
+                { "Разрежённое", CollisionResolutionMethod.Sparse }
+
+            };
+
+
+            Console.WriteLine($"Выбранное количество элементов: {itemsCount}");
+
+            foreach (var resMethodName in resolutionMethods.Keys)
+            {
+                Console.WriteLine(resMethodName);
+
+                string header = string.Format(
+                "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} | {5,-20} |",
+                "Пробирование", "Размер", "Коэффициент заполнения", "Длиннейшая цепочка", "Кратчайшая цепочка", "Рехеширований"
+                );
+
+
+                string separator = new string('-', header.Length);
+
+                Console.WriteLine(separator);
+                Console.WriteLine(header);
+                Console.WriteLine(separator);
+                foreach (var hashFuncName in hashFunctions.Keys)
+                {
+                    var ht = new OpenAddressingHashTable<string, string>(openSize, resolutionMethods[resMethodName], hashFunctions[hashFuncName]);
+
+                    var randomItems = new RandomStringIterator(5);
+
+                    foreach (var i in randomItems.Take(itemsCount))
+                    {
+                        ht.Insert(i.Item1, i.Item2);
+                    }
+
+                    Console.WriteLine(
+                        string.Format(
+                            "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} | {5,-20} |",
+                            hashFuncName, ht.Size, ht.FillPercentage(), ht.LongestClusterLength(), ht.ShortestClusterLength(), ht.timesRehashed
+                            ));
+                    Console.WriteLine(separator);
+                    Console.WriteLine("\n");
+                }
+            }
+            Console.ReadLine();
+            return;
+
         }
 
         private static void PrintChainHashTableTests()
