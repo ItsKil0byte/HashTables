@@ -1,4 +1,5 @@
 ﻿using HashTables.Models;
+using System;
 using System.Reflection.Emit;
 
 namespace HashTables
@@ -220,21 +221,23 @@ namespace HashTables
 
             Console.WriteLine($"Выбранное количество элементов: {itemsCount}");
 
+            string header = string.Format(
+                "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} | {5,-20} |",
+                "Пробирование", "Размер", "Коэффициент заполнения", "Длиннейший кластер", "Кратчайший кластер", "Рехеширований"
+                );
+
+
+            string separator = new string('-', header.Length);
+
+
             foreach (var resMethodName in resolutionMethods.Keys)
             {
                 Console.WriteLine(resMethodName);
 
-                string header = string.Format(
-                "| {0,-15} | {1,-10} | {2,-25} | {3,-20} | {4,-20} | {5,-20} |",
-                "Пробирование", "Размер", "Коэффициент заполнения", "Длиннейшая цепочка", "Кратчайшая цепочка", "Рехеширований"
-                );
-
-
-                string separator = new string('-', header.Length);
-
                 Console.WriteLine(separator);
                 Console.WriteLine(header);
                 Console.WriteLine(separator);
+
                 foreach (var hashFuncName in hashFunctions.Keys)
                 {
                     var ht = new OpenAddressingHashTable<string, string>(openSize, resolutionMethods[resMethodName], hashFunctions[hashFuncName]);
@@ -243,7 +246,11 @@ namespace HashTables
 
                     foreach (var i in randomItems.Take(itemsCount))
                     {
-                        ht.Insert(i.Item1, i.Item2);
+                        try
+                        {
+                            ht.Insert(i.Item1, i.Item2);
+                        }
+                        catch { }
                     }
 
                     Console.WriteLine(
@@ -256,6 +263,9 @@ namespace HashTables
                 }
                 Console.WriteLine("\n");
             }
+
+            
+
             Console.ReadLine();
             return;
 
